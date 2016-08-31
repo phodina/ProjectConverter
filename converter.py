@@ -4,15 +4,17 @@ import argparse
 import ewpproject
 import uvprojxproject
 
+# TODO: add Cmake and jinja2 support
+
 def findFile (path,fileext):
     
-    file = ''
+    f = ''
     for root, dirs, files in os.walk(path):
         for file in files:
             if file.endswith(fileext):
-                file = os.path.join(root, file)
+                f = os.path.join(root, file)
     
-    return file 
+    return f
              
 if __name__ == '__main__':
     
@@ -30,7 +32,7 @@ if __name__ == '__main__':
             file = findFile(args.path,'.ewp')
             if (len(file)):
                 print ('Found project file: ' + file)
-                project = ewpproject.EWPProject(file)
+                project = ewpproject.EWPProject(args.path,file)
                 project.parseProject()
                 project.displaySummary()
             else:
@@ -41,7 +43,7 @@ if __name__ == '__main__':
             file = findFile(args.path,'.uvprojx')
             if (len(file)):
                 print ('Found project file: ' + file)
-                project = uvprojxproject.UVPROJXProject(file)
+                project = uvprojxproject.UVPROJXProject(args.path,file)
                 project.parseProject()
                 project.displaySummary()
             else:

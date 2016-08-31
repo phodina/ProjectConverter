@@ -4,8 +4,9 @@ from lxml import objectify
     
 class EWPProject (object):
     
-    def __init__(self, xmlFile):
+    def __init__(self, path, xmlFile):
                 
+        self.path = path
         self.xmlFile = xmlFile
         xmltree = objectify.parse(xmlFile)
         self.root = xmltree.getroot()
@@ -32,23 +33,26 @@ class EWPProject (object):
                             self.chip = e.state 
                         elif e.name.text == 'CCDefines':
                             for d in e.getchildren():
-                                if d.tag == 'state':
+                                if d.tag == 'state' and d.text != None:
                                     self.defines.append(d.text)
                         elif e.name.text == 'CCIncludePath2':
                             for d in e.getchildren():
-                                if d.tag == 'state':
+                                if d.tag == 'state' and d.text != None:
                                     self.includes.append(d.text)
+        
+        for i in range(0, len(self.includes)):
+            self.includes[i] = self.includes[i].replace('$PROJ_DIR$', self.path)
+            
           
     def displaySummary(self):
-             
-             
+              
         print ('Project Name:' + self.projectName)
         print ('Project chip:' + self.chip)
-        print ('Project includes: ' + self.includes)
-        print ('Project defines: ' + self.defines)
+        print ('Project includes: ' + ' '.join(self.includes))
+        print ('Project defines: ' + ' '.join(self.defines))
         
     def searchGroups(self, xml):
-    
+        
         for element in xml.getchildren():
     
             if element.tag == 'group':
