@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import xmltree
 from lxml import objectify
     
 class UVPROJXProject (object):
@@ -7,7 +6,7 @@ class UVPROJXProject (object):
     def __init__(self, xmlFile):
         
         self.xmlFile = xmlFile
-        self.xmltree = objectify.parse(xmlFile)
+        xmltree = objectify.parse(xmlFile)
         self.root = xmltree.getroot()
     
     def parseProject (self):

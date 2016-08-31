@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import xmltree
+
 from lxml import objectify
     
 class EWPProject (object):
@@ -7,7 +7,7 @@ class EWPProject (object):
     def __init__(self, xmlFile):
                 
         self.xmlFile = xmlFile
-        self.xmltree = objectify.parse(xmlFile)
+        xmltree = objectify.parse(xmlFile)
         self.root = xmltree.getroot()
 
     def parseProject(self):
