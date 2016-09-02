@@ -21,7 +21,6 @@ class UVPROJXProject (object):
         self.sources = []
         for element in self.root.Targets.Target.Groups.getchildren():
             
-            
             print ('GroupName: ' + element.GroupName.text)
             if hasattr(element,'Files'):
                 for file in element.Files.getchildren():
