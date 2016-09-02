@@ -43,7 +43,7 @@ class EWPProject (object):
                                     self.project['incs'].append(d.text)
         
         for i in range(0, len(self.project['incs'])):
-            self.project['incs'][i] = self.project['incs'][i].replace('$PROJ_DIR$', self.path)
+            self.project['incs'][i] = self.project['incs'][i].replace('$PROJ_DIR$/..', self.path)
             
           
     def displaySummary(self):
@@ -88,3 +88,6 @@ class EWPProject (object):
                 print ('File: ' +  element.name)
                 group['files'].append(element.name)
         
+    def getProject(self):
+        
+        return self.project

@@ -5,20 +5,21 @@ class UVPROJXProject (object):
     
     def __init__(self, path, xmlFile):
         
+        self.project = {}
         self.xmlFile = xmlFile
         xmltree = objectify.parse(xmlFile)
         self.root = xmltree.getroot()
     
     def parseProject (self):
         
-        self.projectName = self.root.Targets.Target.TargetName
-        self.chip = self.root.Targets.Target.TargetOption.TargetCommonOption.Device
-        self.svd = self.root.Targets.Target.TargetOption.TargetCommonOption.SFDFile
-        self.includes = self.root.Targets.Target.TargetOption.TargetArmAds.Cads.VariousControls.IncludePath.text.split(';')
-        self.memories = self.root.Targets.Target.TargetOption.TargetCommonOption.Cpu
-        self.defines = self.root.Targets.Target.TargetOption.TargetArmAds.Cads.VariousControls.Define.text.split(',')
+        self.project['name'] = self.root.Targets.Target.TargetName
+        self.project['chip'] = self.root.Targets.Target.TargetOption.TargetCommonOption.Device
+        self.project['svd'] = self.root.Targets.Target.TargetOption.TargetCommonOption.SFDFile
+        self.project['incs'] = self.root.Targets.Target.TargetOption.TargetArmAds.Cads.VariousControls.IncludePath.text.split(';')
+        self.project['mems'] = self.root.Targets.Target.TargetOption.TargetCommonOption.Cpu
+        self.project['defs'] = self.root.Targets.Target.TargetOption.TargetArmAds.Cads.VariousControls.Define.text.split(',')
         
-        self.sources = []
+        self.project['srcs'] = []
         for element in self.root.Targets.Target.Groups.getchildren():
             
             print ('GroupName: ' + element.GroupName.text)
@@ -29,10 +30,14 @@ class UVPROJXProject (object):
 
     def displaySummary(self):
         
-        print ('Project Name:' + self.projectName)
-        print ('Project chip:' + self.chip)
-        print ('Project svd:' + self.svd)
-        print ('Project includes: ' + ' '.join(self.includes))        
-        print ('Project defines: ' + ' '.join(self.defines))
-        print ('Project: ' + self.memories)
+        print ('Project Name:' + self.project['name'])
+        print ('Project chip:' + self.project['chip'])
+        print ('Project svd:' + self.project['svd'])
+        print ('Project includes: ' + ' '.join(self.project['incs']))        
+        print ('Project defines: ' + ' '.join(self.project['defs']))
+        print ('Project: ' + self.project['mems'])
+        
+    def getProject(self):
+        
+        return self.project
     

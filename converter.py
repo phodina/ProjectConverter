@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import argparse
+import cmake
 import ewpproject
 import uvprojxproject
-
-# TODO: add Cmake and jinja2 support
 
 def findFile (path,fileext):
     
@@ -35,6 +34,10 @@ if __name__ == '__main__':
                 project = ewpproject.EWPProject(args.path,file)
                 project.parseProject()
                 project.displaySummary()
+                
+                cmakefile = cmake.CMake(project.getProject())
+                cmakefile.populateCMake()
+                
             else:
                 print ('No project *.ewp file found')
                 
@@ -46,6 +49,10 @@ if __name__ == '__main__':
                 project = uvprojxproject.UVPROJXProject(args.path,file)
                 project.parseProject()
                 project.displaySummary()
+                
+                cmakefile = cmake.CMake(project.getProject())
+                cmakefile.populateCMake()
+                
             else:
                 print ('No project *.uvprojx file found')
     else:
