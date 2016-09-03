@@ -35,7 +35,7 @@ if __name__ == '__main__':
                 project.parseProject()
                 project.displaySummary()
                 
-                cmakefile = cmake.CMake(project.getProject())
+                cmakefile = cmake.CMake(project.getProject(),args.path)
                 cmakefile.populateCMake()
                 
             else:
@@ -50,7 +50,7 @@ if __name__ == '__main__':
                 project.parseProject()
                 project.displaySummary()
                 
-                cmakefile = cmake.CMake(project.getProject())
+                cmakefile = cmake.CMake(project.getProject(),args.path)
                 cmakefile.populateCMake()
                 
             else:

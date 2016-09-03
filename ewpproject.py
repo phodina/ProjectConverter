@@ -32,7 +32,7 @@ class EWPProject (object):
      
                     if e.tag == 'option':                
                         if e.name.text == 'OGChipSelectEditMenu':                                          
-                            self.project['chip'] = e.state 
+                            self.project['chip'] = str(e.state) 
                         elif e.name.text == 'CCDefines':
                             for d in e.getchildren():
                                 if d.tag == 'state' and d.text != None:
@@ -52,41 +52,17 @@ class EWPProject (object):
         print ('Project chip:' + self.project['chip'])
         print ('Project includes: ' + ' '.join(self.project['incs']))
         print ('Project defines: ' + ' '.join(self.project['defs']))
-        
-        #print ('Groups: ')
-        #print (self.sources)
-        #for src in self.sources:
-        #    self.printGroups(src)
-            
-
-    def printGroups(self, group):
-
-        print ('Group name:' + group['name'])
-        
-        for file in group['files']:    
-            print ('File: ' + file)
-        
-        for g in group['groups']:
-            self.printGroups(g)
+        print ('Project srcs: ' + ' '.join(self.project['srcs']))
 
     def searchGroups(self, xml, sources):
-        
-        group = {}
-        group['name'] = ''        
-        group['files'] = []
-        group['groups'] = []
         
         for element in xml.getchildren():
     
             if element.tag == 'group':
-                group['name'] = element.name
-                print ('File: ' + group['name'])
-                self.searchGroups(element,group['groups'])                
-                sources.append(group)
+                self.searchGroups(element,sources)                
                 
             elif element.tag == 'file':  
-                print ('File: ' +  element.name)
-                group['files'].append(element.name)
+                sources.append(str(element.name))
         
     def getProject(self):
         

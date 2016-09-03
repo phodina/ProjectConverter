@@ -7,8 +7,9 @@ from jinja2 import Environment, FileSystemLoader
 
 class CMake (object):
     
-    def __init__(self, project):
+    def __init__(self, project, path):
         
+        self.path = path
         self.project = project
         self.context = {}
         
@@ -18,7 +19,7 @@ class CMake (object):
 
         # For debug run cmake -DCMAKE_BUILD_TYPE=Debug or Release
         cmake = {}
-        fpu = '-mfpu=fpv5-sp-d16 -mfloat-abi=softfp'
+        #fpu = '-mfpu=fpv5-sp-d16 -mfloat-abi=softfp'
         fpu = ''
         
         core = ''
@@ -69,7 +70,7 @@ class CMake (object):
         
         self.context['cmake'] = cmake
                 
-        self.generateFile('CMakeLists.txt')
+        self.generateFile('CMakeLists.txt',os.path.join(self.path,'CMakeLists.txt'))
 
         print ('Created file CMakeLists.txt')
         
