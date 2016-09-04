@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from lxml import objectify
     
 class EWPProject (object):
@@ -44,8 +45,15 @@ class EWPProject (object):
         
         for i in range(0, len(self.project['incs'])):
             self.project['incs'][i] = self.project['incs'][i].replace('$PROJ_DIR$/..', self.path)
-            
-          
+                    
+        self.project['files']=[]
+        i=0
+        
+        if os.path.exists(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc'):
+            for entry in os.listdir(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc'):
+                if entry.endswith('.S') or entry.endswith('.s'):          
+                    self.project['files'].append(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/'+entry)        
+                        
     def displaySummary(self):
               
         print ('Project Name:' + self.project['name'])
@@ -62,7 +70,8 @@ class EWPProject (object):
                 self.searchGroups(element,sources)                
                 
             elif element.tag == 'file':  
-                sources.append(str(element.name))
+                if not str(element.name).endswith('.s'):
+                    sources.append(str(element.name).replace('$PROJ_DIR$/..', self.path))
         
     def getProject(self):
         

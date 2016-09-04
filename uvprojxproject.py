@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+
+import os
 from lxml import objectify
     
 class UVPROJXProject (object):
     
     def __init__(self, path, xmlFile):
         
+        self.path = path
         self.project = {}
         self.xmlFile = xmlFile
         xmltree = objectify.parse(xmlFile)
@@ -24,7 +27,21 @@ class UVPROJXProject (object):
             print ('GroupName: ' + element.GroupName.text)
             if hasattr(element,'Files'):
                 for file in element.Files.getchildren():
-                    self.project['srcs'] = file.FilePath.text
+                    if not str(file.FilePath.text).endswith('.s'):
+                        self.project['srcs'].append(str(file.FilePath.text).replace('..', self.path))
+        
+        for i in range(0, len(self.project['incs'])):
+            self.project['incs'][i] = self.project['incs'][i].replace('..', self.path)
+            
+        
+        self.project['files']=[]
+        i=0        
+        
+        if os.path.exists(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc'):
+            for entry in os.listdir(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc'):
+                if entry.endswith('.S') or entry.endswith('.s'):          
+                    self.project['files'].append(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/'+ entry)
+                            
 
     def displaySummary(self):
         

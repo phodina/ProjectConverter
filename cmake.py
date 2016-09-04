@@ -37,7 +37,7 @@ class CMake (object):
         elif 'STM32F7' in self.project['chip']:
             core = '-mcpu=cortex-m7'
         elif 'STM32L0' in self.project['chip']:
-            core = '-mcpu=cortex-m0'
+            core = '-mcpu=cortex-m0plus'
         elif 'STM32L1' in self.project['chip']:
             core = '-mcpu=cortex-m3'
         elif 'STM32L4' in self.project['chip']:
@@ -49,8 +49,21 @@ class CMake (object):
         for inc in self.project['incs']:    
             cmake['incs'].append(inc)    
         cmake['srcs'] = []
-        cmake['srcs'].append({'path':'src','var':'DIR_SRC'})  
-
+        srcs = []
+        i=0
+        for src in self.project['srcs']:
+            s = os.path.dirname(src) 
+            if len(s) and s not in srcs:             
+                srcs.append(s)                
+                cmake['srcs'].append({'path': s,'var':'DIR_SRC' + str(i)})  
+                i = i+1
+                
+        cmake['files']=[]
+        
+        for file in self.project['files']:
+            cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})  
+            i = i+1
+            
         cmake['cxx'] = 'false'
         
         cmake['c_flags'] = '-g -Wextra -Wshadow -Wimplicit-function-declaration -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes -fno-common -ffunction-sections -fdata-sections -MD -Wall -Wundef -mthumb ' + core + ' ' + fpu
@@ -58,15 +71,17 @@ class CMake (object):
         cmake['cxx_flags'] = '-Wextra -Wshadow -Wredundant-decls  -Weffc++ -fno-common -ffunction-sections -fdata-sections -MD -Wall -Wundef -mthumb ' + core + ' ' + fpu
  
         cmake['asm_flags'] = '-g -mthumb ' + core + ' ' + fpu + ' -x assembler-with-cpp'
-        cmake['linker_flags'] = '-g -Wl,--gc-sections -Wl,-Map=' + cmake['project'] + '.map --static -nostartfiles -Wl,--start-group -specs=nosys.specs -lc -lgcc -lnosys -Wl,--end-group -mthumb ' + core + ' ' + fpu
-        cmake['linker_script'] = 'stm32.ld'
-        cmake['linker_path'] = 'libopencm3/lib'        
+        cmake['linker_flags'] = '-g -Wl,--gc-sections -Wl,-Map=' + cmake['project'] + '.map -mthumb ' + core + ' ' + fpu
+        cmake['linker_script'] = 'STM32FLASH.ld'
+        cmake['linker_path'] = ''  
+   
+        self.linkerScript('STM32FLASH.ld',os.path.join(self.path,'STM32FLASH.ld'))
+        
         cmake['defines'] = []
         for define in self.project['defs']:
             cmake['defines'].append(define)
             
         cmake['libs'] = []
-        #cmake['libs'].append({'name':'opencm3_' + self.root.MCU.attrib['Family'].lower(),'path':'libopencm3/lib'})
         
         self.context['cmake'] = cmake
                 
@@ -79,7 +94,6 @@ class CMake (object):
         if (pathDst == ''):
             pathDst = pathSrc
             
-        print (os.getcwd())
         self.context['file'] = os.path.basename(str(pathSrc))
         self.context['author'] = author
         self.context['date'] = datetime.date.today().strftime('%d, %b %Y')
@@ -103,3 +117,32 @@ class CMake (object):
         else:
             # Different OS than Windows or Linux            
             pass
+        
+    def linkerScript(self,pathSrc, pathDst='',template_dir='../PegasusTemplates'):
+                
+        if (pathDst == ''):
+            pathDst = pathSrc
+            
+        self.context['file'] = os.path.basename(str(pathSrc))
+        self.context['flash'] = '64'
+        self.context['ram'] = '8'        
+        
+        env = Environment(loader=FileSystemLoader(template_dir),trim_blocks=True,lstrip_blocks=True)
+        template = env.get_template(str(pathSrc))
+        
+        generated_code = template.render(self.context)
+            
+        if platform.system() == 'Window':    
+
+            with open(pathDst, 'wb') as f:
+                f.write(generated_code)
+        
+        elif platform.system() == 'Linux':
+
+            with open(pathDst, 'wb') as f:
+                f.write(str.encode(generated_code))        
+        else:
+            # Different OS than Windows or Linux            
+            pass
+        
+        
