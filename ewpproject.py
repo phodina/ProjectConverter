@@ -44,7 +44,16 @@ class EWPProject (object):
                                     self.project['incs'].append(d.text)
         
         for i in range(0, len(self.project['incs'])):
-            self.project['incs'][i] = self.project['incs'][i].replace('$PROJ_DIR$/..', self.path)
+            
+            s = str(self.project['incs'][i])
+            
+            if os.path.sep not in s:
+                if os.path.sep == '\\':
+                    s = s.replace('/','\\')
+                elif os.path.sep == '/':                    
+                    s = s.replace('\\','/')
+            
+            self.project['incs'][i] = s.replace('$PROJ_DIR$'+os.path.sep+'..', self.path)
                     
         self.project['files']=[]
         i=0
@@ -71,7 +80,15 @@ class EWPProject (object):
                 
             elif element.tag == 'file':  
                 if not str(element.name).endswith('.s'):
-                    sources.append(str(element.name).replace('$PROJ_DIR$/..', self.path))
+
+                    s = str(element.name)
+                    if os.path.sep not in s:
+                        if os.path.sep == '\\':
+                            s = s.replace('/','\\')
+                        elif os.path.sep == '/':                    
+                            s = s.replace('\\','/')
+                            
+                    sources.append(s.replace('$PROJ_DIR$'+os.path.sep+'..', self.path))
         
     def getProject(self):
         
