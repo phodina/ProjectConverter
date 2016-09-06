@@ -28,10 +28,26 @@ class UVPROJXProject (object):
             if hasattr(element,'Files'):
                 for file in element.Files.getchildren():
                     if not str(file.FilePath.text).endswith('.s'):
-                        self.project['srcs'].append(str(file.FilePath.text).replace('..', self.path))
+                        s = str(file.FilePath.text)
+                        
+                        if os.path.sep not in s:
+                            if os.path.sep == '\\':
+                                s = s.replace('/','\\')
+                            elif os.path.sep == '/':                    
+                                s = s.replace('\\','/')
+                                
+                        self.project['srcs'].append(s.replace('..', self.path,1))
         
         for i in range(0, len(self.project['incs'])):
-            self.project['incs'][i] = self.project['incs'][i].replace('..', self.path)
+            s = str(self.project['incs'][i])
+            
+            if os.path.sep not in s:
+                if os.path.sep == '\\':
+                    s = s.replace('/','\\')
+                elif os.path.sep == '/':                    
+                    s = s.replace('\\','/')
+            
+            self.project['incs'][i] = s.replace('..', self.path,1)
             
         
         self.project['files']=[]
@@ -49,7 +65,7 @@ class UVPROJXProject (object):
         print ('Project chip:' + self.project['chip'])
         print ('Project includes: ' + ' '.join(self.project['incs']))        
         print ('Project defines: ' + ' '.join(self.project['defs']))                
-        print ('Project srcs: ' + ' '.join(self.project['defs']))
+        print ('Project srcs: ' + ' '.join(self.project['srcs']))
         print ('Project: ' + self.project['mems'])
         
     def getProject(self):

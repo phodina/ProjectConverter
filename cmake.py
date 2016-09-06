@@ -49,17 +49,16 @@ class CMake (object):
         for inc in self.project['incs']:    
             cmake['incs'].append(inc)    
         cmake['srcs'] = []
-        srcs = []
+
         i=0
-        for src in self.project['srcs']:
-            s = os.path.dirname(src) 
-            if len(s) and s not in srcs:             
-                srcs.append(s)                
-                cmake['srcs'].append({'path': s,'var':'DIR_SRC' + str(i)})  
-                i = i+1
                 
         cmake['files']=[]
         
+        for file in self.project['srcs']:
+            if file.endswith('.c') or file.endswith('.h'):
+                cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})  
+                i = i+1
+            
         for file in self.project['files']:
             cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})  
             i = i+1
