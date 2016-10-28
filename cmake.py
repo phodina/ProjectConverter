@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+""" CMake generation module
+    @file
+"""
+
 import os
 import platform
 import datetime
@@ -53,6 +57,7 @@ class CMake (object):
         i=0
                 
         cmake['files']=[]
+        cmake['ass']=[]
         
         for file in self.project['srcs']:
             if file.endswith('.c') or file.endswith('.h'):
@@ -60,7 +65,9 @@ class CMake (object):
                 i = i+1
             
         for file in self.project['files']:
-            cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})  
+            print ('Assembly added ' + file)
+            cmake['ass'].append({'path': file})  
+            cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})
             i = i+1
             
         cmake['cxx'] = 'false'
@@ -69,13 +76,14 @@ class CMake (object):
 
         cmake['cxx_flags'] = '-Wextra -Wshadow -Wredundant-decls  -Weffc++ -fno-common -ffunction-sections -fdata-sections -MD -Wall -Wundef -mthumb ' + core + ' ' + fpu
  
-        cmake['asm_flags'] = '-g -mthumb ' + core + ' ' + fpu + ' -x assembler-with-cpp'
+        cmake['asm_flags'] = '-g -mthumb ' + core + ' ' + fpu #+ ' -x assembler-with-cpp'
         cmake['linker_flags'] = '-g -Wl,--gc-sections -Wl,-Map=' + cmake['project'] + '.map -mthumb ' + core + ' ' + fpu
         cmake['linker_script'] = 'STM32FLASH.ld'
         cmake['linker_path'] = ''  
    
         self.linkerScript('STM32FLASH.ld',os.path.join(self.path,'STM32FLASH.ld'))
         
+        cmake['oocd_target'] = 'stm32f3x'
         cmake['defines'] = []
         for define in self.project['defs']:
             cmake['defines'].append(define)
@@ -88,7 +96,8 @@ class CMake (object):
 
         print ('Created file CMakeLists.txt')
         
-    def generateFile (self, pathSrc, pathDst='', author='Pegasus', version='v1.0.0', licence='licence.txt', template_dir='../PegasusTemplates'):
+#    def generateFile (self, pathSrc, pathDst='', author='Pegasus', version='v1.0.0', licence='licence.txt', template_dir='../PegasusTemplates'):
+    def generateFile (self, pathSrc, pathDst='', author='Pegasus', version='v1.0.0', licence='licence.txt', template_dir='.'):
         
         if (pathDst == ''):
             pathDst = pathSrc
@@ -116,8 +125,9 @@ class CMake (object):
         else:
             # Different OS than Windows or Linux            
             pass
-        
-    def linkerScript(self,pathSrc, pathDst='',template_dir='../PegasusTemplates'):
+    
+    def linkerScript(self,pathSrc, pathDst='',template_dir='.'):
+#    def linkerScript(self,pathSrc, pathDst='',template_dir='.../PegasusTemplates'):
                 
         if (pathDst == ''):
             pathDst = pathSrc

@@ -60,10 +60,10 @@ class EWPProject(object):
         self.project['files'] = []
         i = 0
 
-        if os.path.exists(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc'):
-            for entry in os.listdir(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc'):
+        if os.path.exists(self.path + '/Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc'):
+            for entry in os.listdir(self.path + '/Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc'):
                 if entry.endswith('.S') or entry.endswith('.s'):
-                    self.project['files'].append(self.path + '/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/'+entry)
+                    self.project['files'].append(self.path + '/Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc/'+entry)
 
     def displaySummary(self):
         """ Display summary of parsed project settings

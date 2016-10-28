@@ -20,7 +20,7 @@ def find_file(path, fileext):
     for root, dirs, files in os.walk(path):
         for file in files:
             if file.endswith(fileext):
-                file = os.path.join(root, filename)
+                filename = os.path.join(root, file)
     return filename
 
 if __name__ == '__main__':
