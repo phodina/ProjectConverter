@@ -27,13 +27,14 @@ if __name__ == '__main__':
     """ Parses params and calls the right conversion"""
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("format", choices=("ewp", "uvprojx"))
     parser.add_argument("path", type=str, help="Root directory of project")
-    parser.add_argument("--ewp", help="Search for *.EWP file in project structure", action='store_true')
-    parser.add_argument("--uvprojx", help="Search for *.UPROJX file in project structure", action='store_true')
+	#"--ewp", help="Search for *.EWP file in project structure", action='store_true')
+    #parser.add_argument("--uvprojx", help="Search for *.UPROJX file in project structure", action='store_true')
     args = parser.parse_args()
 
     if os.path.isdir(args.path):
-        if args.ewp:
+        if args.format == 'ewp':
             print('Looking for *.ewp file in ' + args.path)
             filename = find_file(args.path, '.ewp')
             if len(filename):
@@ -45,7 +46,7 @@ if __name__ == '__main__':
                 cmakefile.populateCMake()
             else:
                 print('No project *.ewp file found')
-        elif args.uvprojx:
+        elif args.format == 'uvprojx':
             print('Looking for *.uvprojx file in ' + args.path)
             filename = find_file(args.path, '.uvprojx')
             if len(filename):
@@ -58,5 +59,7 @@ if __name__ == '__main__':
                 cmakefile.populateCMake()
             else:
                 print('No project *.uvprojx file found')
+        else:
+            print ('No format specified')
     else:
         print('Not a valid file path')
