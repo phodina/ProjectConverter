@@ -60,7 +60,7 @@ class CMake (object):
         cmake['ass']=[]
         
         for file in self.project['srcs']:
-            if file.endswith('.c') or file.endswith('.h'):
+            if file.endswith('.c') or file.endswith('.h') or file.endswith('.cpp'):
                 cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})  
                 i = i+1
             
@@ -69,7 +69,7 @@ class CMake (object):
             cmake['ass'].append({'path': file})  
             cmake['files'].append({'path': file,'var':'SRC_FILE' + str(i)})
             i = i+1
-            
+		
         cmake['cxx'] = 'false'
         
         cmake['c_flags'] = '-g -Wextra -Wshadow -Wimplicit-function-declaration -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes -fno-common -ffunction-sections -fdata-sections -MD -Wall -Wundef -mthumb ' + core + ' ' + fpu
@@ -91,10 +91,11 @@ class CMake (object):
         cmake['libs'] = []
         
         self.context['cmake'] = cmake
-                
-        self.generateFile('CMakeLists.txt',os.path.join(self.path,'CMakeLists.txt'))
+        
+        abspath = os.path.abspath(os.path.join(self.path,'CMakeLists.txt'))
+        self.generateFile('CMakeLists.txt', abspath)
 
-        print ('Created file CMakeLists.txt')
+        print ('Created file CMakeLists.txt [{}]'.format(abspath))
         
 #    def generateFile (self, pathSrc, pathDst='', author='Pegasus', version='v1.0.0', licence='licence.txt', template_dir='../PegasusTemplates'):
     def generateFile (self, pathSrc, pathDst='', author='Pegasus', version='v1.0.0', licence='licence.txt', template_dir='.'):
@@ -113,15 +114,15 @@ class CMake (object):
         
         generated_code = template.render(self.context)
             
-        if platform.system() == 'Window':    
+        if platform.system() == 'Windows':    
 
-            with open(pathDst, 'wb') as f:
+            with open(pathDst, 'w') as f:
                 f.write(generated_code)
         
         elif platform.system() == 'Linux':
 
-            with open(pathDst, 'wb') as f:
-                f.write(str.encode(generated_code))        
+            with open(pathDst, 'w') as f:
+                f.write(generated_code)        
         else:
             # Different OS than Windows or Linux            
             pass
@@ -141,15 +142,15 @@ class CMake (object):
         
         generated_code = template.render(self.context)
             
-        if platform.system() == 'Window':    
+        if platform.system() == 'Windows':    
 
-            with open(pathDst, 'wb') as f:
+            with open(pathDst, 'w') as f:
                 f.write(generated_code)
         
         elif platform.system() == 'Linux':
 
-            with open(pathDst, 'wb') as f:
-                f.write(str.encode(generated_code))        
+            with open(pathDst, 'w') as f:
+                f.write(generated_code)        
         else:
             # Different OS than Windows or Linux            
             pass
