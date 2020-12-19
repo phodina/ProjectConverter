@@ -4,10 +4,10 @@ A lot of Embedded Projects use proprietary IDEs and build processes. This make a
 
 ## Module description
 
-[cmake.py](cmake.py) - Cmake and linker file generation
-[converter.py](converter.py) - Argument parsing
-[ewpproject.py](ewpproject) - Parser for IAR's ewp file format
-[uvprojx.py](uvprojx.py) - Parser for ARM's KEIL uvprojx file format
+- [cmake.py](cmake.py) - Cmake and linker file generation
+- [converter.py](converter.py) - Argument parsing
+- [ewpproject.py](ewpproject) - Parser for IAR's ewp file format
+- [uvprojx.py](uvprojx.py) - Parser for ARM's KEIL uvprojx file format
 
 ## Prerequisites
 
